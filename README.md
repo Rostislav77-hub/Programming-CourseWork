@@ -1,2 +1,2 @@
-# Programming-CourseWork
-Labs and coursework (Matviiv IM-55)
+# Programming-CourseWork (Matviiv IM-55)
+My Labs and CourseWork 
