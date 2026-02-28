@@ -11,3 +11,17 @@ function* fibonacciGenerator() {
     next = temp;
   }
 }
+
+function* colorCycleGenerator() {
+  const colors = [
+    { name: "RED", code: "\x1b[31m" },
+    { name: "GREEN", code: "\x1b[32m" },
+    { name: "BLUE", code: "\x1b[34m" },
+  ];
+  let index = 0;
+
+  while (true) {
+    yield colors[index];
+    index = (index + 1) % colors.length;
+  }
+}
