@@ -2,7 +2,9 @@ function generateKey(args) {
   return JSON.stringify(args);
 }
 
-function memoize(fn) {
+function memoize(fn, options = {}) {
+  const maxSize = options.maxSize ?? Infinity;
+
   const cache = new Map();
 
   function memoized(...args) {
@@ -13,6 +15,12 @@ function memoize(fn) {
       return cache.get(key);
     }
 
+    if (cache.size >= maxSize) {
+      const oldestKey = cache.keys().next().value;
+      cache.delete(oldestKey);
+      console.log(`[evict FIFO] removed key=${oldestKey}`);
+    }
+
     console.log(`[cache MISS] key=${key}`);
     const result = fn(...args);
     cache.set(key, result);
@@ -20,6 +28,7 @@ function memoize(fn) {
   }
 
   memoized.cache = cache;
+  memoized.options = { maxSize };
 
   return memoized;
 }
