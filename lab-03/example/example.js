@@ -1,17 +1,24 @@
-const { memoize } = require("../lib/memoize");
+const { memoize } = require('../lib/memoize');
 
 function add(a, b) {
   return a + b;
 }
+console.log("=== 1. Перевірка стратегії LRU (Least Recently Used) ===");
+const lruAdd = memoize(add, { maxSize: 2, strategy: 'LRU' });
 
-const memoizedAdd = memoize(add, { maxSize: 2 });
+lruAdd(1, 1); 
+lruAdd(2, 2); 
+lruAdd(1, 1);
+lruAdd(3, 3); 
+lruAdd(2, 2); 
+lruAdd(1, 1);
 
-console.log("=== Тестування ліміту кешу (maxSize: 2) ===");
+console.log("\n=== 2. Перевірка стратегії LFU (Least Frequently Used) ===");
+const lfuAdd = memoize(add, { maxSize: 2, strategy: 'LFU' });
 
-console.log("1. Виклик (1, 1):", memoizedAdd(1, 1));
-console.log("2. Виклик (2, 2):", memoizedAdd(2, 2));
-console.log("3. Виклик (1, 1):", memoizedAdd(1, 1));
-
-console.log("4. Виклик (3, 3):", memoizedAdd(3, 3));
-
-console.log("5. Виклик (1, 1):", memoizedAdd(1, 1));
+lfuAdd(1, 1);
+lfuAdd(2, 2); 
+lfuAdd(1, 1); 
+lfuAdd(3, 3); 
+lfuAdd(2, 2); 
+lfuAdd(1, 1); 
