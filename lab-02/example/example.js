@@ -1,6 +1,4 @@
-// Підключаємо нашу локальну бібліотеку Пункт 7
-const lib = require("../index.js");
-
+const lib = require("lab-02");
 // Функції обробки (Callback)
 function processNumbers(value, iteration, state) {
   state.total += value;
@@ -21,7 +19,6 @@ function processColors(colorObj, iteration) {
 //  Виконання Пункт 8
 try {
   console.log("=== Тестування генератора Фібоначчі ===");
-  // Виклик функції з нашої бібліотеки
   const fibGen = lib.fibonacciGenerator();
   lib.consumeIterator(fibGen, 0.01, processNumbers);
 
