@@ -52,8 +52,14 @@ class EventBus {
     return true;
   }
 
-  publish(event, payload) {
-    if (!this._events[event]) return;
+ publish(event, payload) {
+    if (!this._events[event] || this._events[event].length === 0) {
+      if (event === 'error') {
+        const errToThrow = payload instanceof Error ? payload : new Error(payload || 'Unhandled error');
+        throw errToThrow; 
+      }
+      return false; 
+    }
 
     const listeners = [...this._events[event]];
     
@@ -61,9 +67,17 @@ class EventBus {
       try {
         listener(payload);
       } catch (error) {
-        console.error(`Ошибка в обработчике события '${event}':`, error);
+        if (event !== 'error') {
+          const errObj = new Error(`Помилка в обробнику події '${event}': ${error.message}`);
+          errObj.originalError = error;
+          this.publish('error', errObj); 
+        } else {
+          console.error('Критичний збій у самому каналі error:', error);
+        }
       }
     });
+
+    return true;
   }
 
   listenerCount(event) {
