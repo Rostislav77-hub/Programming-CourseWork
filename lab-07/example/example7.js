@@ -5,19 +5,19 @@ const bus = new EventBus();
 const Warehouse = {
   init() {
     this._id = bus.subscribe('order:new', ({ orderId, item, qty }) => {
-      console.log(`  [Склад]     Резервирую ${qty} шт. "${item}" для заказа #${orderId}`);
+      console.log(`  [Склад]     Резервую ${qty} шт. "${item}" для замовлення #${orderId}`);
     });
   },
   shutdown() {
     bus.unsubscribe(this._id);
-    console.log('  [Склад]     Отписался от order:new');
+    console.log('  [Склад]     Відмовився від order:new');
   },
 };
 
 const Logistics = {
   init() {
     this._id = bus.subscribe('order:new', ({ orderId, item }) => {
-      console.log(`  [Логистика] Создаю маршрут доставки для заказа #${orderId} (${item})`);
+      console.log(`  [Логістика] Створюю маршрут доставки для замовлення #${orderId} (${item})`);
     });
   },
 };
@@ -27,7 +27,7 @@ const Stats = {
   init() {
     this._id = bus.subscribe('order:new', () => {
       this.count++;
-      console.log(`  [Аналитика] Всего заказов принято: ${this.count}`);
+      console.log(`  [Аналітика] Усього замовлень прийнято: ${this.count}`);
     });
   },
 };
@@ -35,7 +35,7 @@ const Stats = {
 const Manager = {
   init() {
     this._id = bus.subscribe('stock:low', ({ item, remaining }) => {
-      console.log(`  [Менеджер]  Запускаю закупку "${item}" (остаток: ${remaining} шт.)`);
+      console.log(`  [Менеджер]  Запускаю закупівлю "${item}" (залишок: ${remaining} шт.)`);
     });
   },
 };
@@ -43,7 +43,7 @@ const Manager = {
 const Audit = {
   init() {
     this._id = bus.subscribeOnce('order:new', ({ orderId }) => {
-      console.log(`  [Аудит]     Первый заказ смены зафиксирован: #${orderId}`);
+      console.log(`  [Аудит]    Перше замовлення зміни зафіксовано: #${orderId}`);
     });
   },
 };
