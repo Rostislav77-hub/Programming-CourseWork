@@ -55,21 +55,21 @@ Manager.init();
 Audit.init();
 
 
-console.log('━━━ Заказ #1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+console.log('━━━ Замовлення #1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 bus.publish('order:new', { orderId: 1, item: 'Ноутбук', qty: 2 });
 
-console.log('\n━━━ Заказ #2 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-bus.publish('order:new', { orderId: 2, item: 'Мышь', qty: 5 });
+console.log('\n━━━ Замовлення #2 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+bus.publish('order:new', { orderId: 2, item: 'Миша', qty: 5 });
 
-console.log('\n━━━ Сигнал низкого остатка ━━━━━━━━━━━━━━━━━━━━');
+console.log('\n━━━ Сигнал низького залишку ━━━━━━━━━━━━━━━━━━━━');
 bus.publish('stock:low', { item: 'Ноутбук', remaining: 3 });
 
-console.log('\n━━━ Склад уходит на техобслуживание ━━━━━━━━━━━');
+console.log('\n━━━ Склад йде на техобслуговування ━━━━━━━━━━━');
 Warehouse.shutdown();
 
-console.log('\n━━━ Заказ #3 (склад уже отписан) ━━━━━━━━━━━━━━');
-bus.publish('order:new', { orderId: 3, item: 'Клавиатура', qty: 1 });
+console.log('\n━━━ Замовлення #3 (склад вже відписаний) ━━━━━━━━━━━━━━');
+bus.publish('order:new', { orderId: 3, item: 'Клавіатура', qty: 1 });
 
-console.log('\n━━━ Финальная статистика ━━━━━━━━━━━━━━━━━━━━━━');
-console.log(`  Заказов обработано: ${Stats.count}`);
-console.log(`  Слушателей 'order:new' сейчас: ${bus.listenerCount('order:new')}`);
+console.log('\n━━━ Фінальна статистика ━━━━━━━━━━━━━━━━━━━━━━');
+console.log(`  Замовлень оброблено: ${Stats.count}`);
+console.log(`  Слухачів 'order:new' зараз: ${bus.listenerCount('order:new')}`);
