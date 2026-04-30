@@ -35,3 +35,45 @@ class BaseHttpClient {
     return this._fetch(url, { method, headers, body });
   }
 }
+
+class LoggingProxy {
+  constructor(client) { this._client = client; }
+
+  async request(req) {
+    console.log(`[LOG] → ${req.method || 'GET'} ${req.url}`);
+    const res = await this._client.request(req);
+    console.log(`[LOG] ← ${res.status}`);
+    return res;
+  }
+}
+
+class RateLimitProxy {
+  constructor(client, max) { this._client = client; this._max = max; this._n = 0; }
+
+  request(req) {
+    if (this._n >= this._max) {
+      console.log(`[RATE] лимит ${this._max} исчерпан`);
+      return { status: 429, body: { message: 'Too Many Requests' } };
+    }
+    console.log(`[RATE] запрос ${++this._n}/${this._max}`);
+    return this._client.request(req);
+  }
+}
+
+class AuthProxy {
+  constructor(client, strategy) { this._client = client; this._strategy = strategy; }
+
+  setStrategy(s) { console.log(`[AUTH] смена: ${this._strategy.name} → ${s.name}`); this._strategy = s; }
+
+  async request(req) {
+    const authed = { ...req, headers: this._strategy.apply(req.headers || {}) };
+    let response = await this._client.request(authed);
+
+    if (response.status === 401 && this._strategy.name === 'JWT') {
+      console.log('[AUTH] 401 → обновляю токен...');
+      this._strategy.renewToken();
+      response = await this._client.request({ ...req, headers: this._strategy.apply({}) });
+    }
+    return response;
+  }
+}
