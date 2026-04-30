@@ -1,5 +1,18 @@
 'use strict';
 
+class ApiKeyStrategy {
+  constructor(key) { this.key = key; }
+  apply(headers)   { return { ...headers, 'X-API-Key': this.key }; }
+  get name()       { return 'ApiKey'; }
+}
+
+class JwtStrategy {
+  constructor(token, refresh) { this.token = token; this._refresh = refresh; }
+  apply(headers)  { return { ...headers, 'Authorization': `Bearer ${this.token}` }; }
+  renewToken()    { this.token = this._refresh(); console.log('[JWT] новый токен:', this.token); }
+  get name()      { return 'JWT'; }
+}
+
 function mockFetch(url, { method = 'GET', headers = {} } = {}) {
   const key   = headers['X-API-Key'];
   const token = (headers['Authorization'] || '').replace('Bearer ', '');
